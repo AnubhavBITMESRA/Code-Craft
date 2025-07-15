@@ -1,3 +1,4 @@
+import * as monaco from "monaco-editor";
 import { Monaco } from "@monaco-editor/react";
 import { Theme } from "../../../types";
 
@@ -344,7 +345,15 @@ export const THEMES: Theme[] = [
   { id: "solarized-dark", label: "Solarized Dark", color: "#002b36" },
 ];
 
-export const THEME_DEFINITONS = {
+// ✅ Strongly typed theme definition structure
+interface MonacoThemeDefinition {
+  base: monaco.editor.BuiltinTheme;
+  inherit: boolean;
+  rules: monaco.editor.ITokenThemeRule[];
+  colors?: monaco.editor.IColors;
+}
+
+export const THEME_DEFINITONS: Record<string, MonacoThemeDefinition> = {
   "github-dark": {
     base: "vs-dark",
     inherit: true,
@@ -419,17 +428,17 @@ export const THEME_DEFINITONS = {
   },
 };
 
-// Helper function to define themes in Monaco
+// ✅ Safe, fully typed theme registration
 export const defineMonacoThemes = (monaco: Monaco) => {
   Object.entries(THEME_DEFINITONS).forEach(([themeName, themeData]) => {
     monaco.editor.defineTheme(themeName, {
-      base: themeData.base,
+      base: themeData.base as monaco.editor.BuiltinTheme,
       inherit: themeData.inherit,
       rules: themeData.rules.map((rule) => ({
         ...rule,
         foreground: rule.foreground,
       })),
-      colors: themeData.colors,
+      colors: themeData.colors ?? {}, // ✅ fallback to empty object if undefined
     });
   });
 };

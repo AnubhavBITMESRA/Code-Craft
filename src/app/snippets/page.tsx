@@ -9,6 +9,7 @@ import NavigationHeader from "@/components/NavigationHeader";
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Code, Grid, Layers, Search, Tag, X } from "lucide-react";
 import SnippetCard from "./_components/SnippetCard";
+import Image from "next/image"; // ✅ import Image from next/image
 
 function SnippetsPage() {
   const snippets = useQuery(api.snippets.getSnippets);
@@ -16,7 +17,6 @@ function SnippetsPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "list">("grid");
 
-  // loading state
   if (snippets === undefined) {
     return (
       <div className="min-h-screen">
@@ -114,7 +114,14 @@ function SnippetsPage() {
                   `}
               >
                 <div className="flex items-center gap-2">
-                  <img src={`/${lang}.png`} alt={lang} className="w-4 h-4 object-contain" />
+                  {/* ✅ Updated to use <Image /> */}
+                  <Image
+                    src={`/${lang}.png`}
+                    alt={lang}
+                    width={16}
+                    height={16}
+                    className="object-contain"
+                  />
                   <span className="text-sm">{lang}</span>
                 </div>
               </button>
@@ -178,7 +185,7 @@ function SnippetsPage() {
           </AnimatePresence>
         </motion.div>
 
-        {/* edge case: empty state */}
+        {/* Empty State */}
         {filteredSnippets.length === 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -219,4 +226,5 @@ function SnippetsPage() {
     </div>
   );
 }
+
 export default SnippetsPage;
